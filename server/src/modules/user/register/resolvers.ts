@@ -1,17 +1,25 @@
-import { Arg, Query, Resolver } from "type-graphql";
-// import { getRepository } from "typeorm";
-// import { User as UserEntity } from "../../../entity/User";
-import { User as UserSchema } from "./schema";
+import { Arg, Query, Resolver, ObjectType, Field } from "type-graphql";
+import { User } from "../../../entity/User";
+import { ErrorMessage } from "./ErrorMessage";
 
-@Resolver(UserSchema)
-export class UserResolver {
-	// constructor(private userService : User ){}
+@ObjectType()
+export class Error {
+	@Field()
+	path: string;
 
-	@Query((returns) => String!)
-	async user(@Arg("id") id: string) {
-		// const user = await getRepository(UserEntity).findOne(id);
-		// if (!user) return null;
-		// return user;
-		return "Hello World";
+	@Field()
+	message: string;
+}
+
+@Resolver()
+export default class {
+	@Query(() => Error!)
+	async register(@Arg("email") email: string, password: string) {
+		await User.create({
+			email,
+			password,
+		}).save();
+
+		return null;
 	}
 }

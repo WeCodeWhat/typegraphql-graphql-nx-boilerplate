@@ -1,11 +1,10 @@
 import { GraphQLSchema } from "graphql";
-import { buildSchemaSync } from "type-graphql";
-import { UserResolver } from "../modules/user/register/resolvers";
-// import * as glob from "glob";
+import { buildSchema } from "type-graphql";
+import RegisterResolver from "../modules/user/register/resolvers";
 
 const genSchema = async (): Promise<GraphQLSchema> => {
-	const schema = await buildSchemaSync({
-		resolvers: [UserResolver],
+	const schema = await buildSchema({
+		resolvers: [RegisterResolver],
 	});
 
 	return schema;

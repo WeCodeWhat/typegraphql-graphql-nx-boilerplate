@@ -1,11 +1,13 @@
 import "reflect-metadata";
-import { createConnection } from "typeorm";
+import { createConnection, getConnectionOptions } from "typeorm";
 import { ApolloServer } from "apollo-server-express";
 import * as Express from "express";
 import genSchema from "./utils/genSchema";
+import "dotenv/config";
 
 export const startServer = async () => {
-	await createConnection();
+	const connectionOptions = await getConnectionOptions("development");
+	await createConnection({ ...connectionOptions, name: "default" });
 
 	const apolloServer = new ApolloServer({
 		schema: await genSchema(),

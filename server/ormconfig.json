@@ -2,12 +2,18 @@
 	"type": "postgres",
 	"host": "localhost",
 	"port": 5432,
+	"name": "development",
 	"username": "postgres",
 	"password": "Cqt20011101",
 	"database": "apollo-ts",
 	"synchronize": true,
-	"logging": false,
+	"logging": true,
 	"entities": ["src/entity/**/*.ts"],
 	"migrations": ["src/migration/**/*.ts"],
-	"subscribers": ["src/subscriber/**/*.ts"]
+	"subscribers": ["src/subscriber/**/*.ts"],
+	"cli": {
+		"entitiesDir": "src/entity",
+		"migrationsDir": "src/migration",
+		"subscribersDir": "src/subscriber"
+	}
 }
