@@ -2,8 +2,10 @@ import { Arg, Resolver, Mutation, Query } from "type-graphql";
 import { User } from "../../../entity/User";
 import { Error as ErrorSchema } from "../../common/error.schema";
 import { ErrorMessage } from "./ErrorMessage";
-@Resolver()
-export default class {
+import { RegisterInput } from "./RegisterInput";
+
+@Resolver((of) => User)
+class RegisterResolver {
 	@Query(() => String)
 	hello() {
 		return "Hello World";
@@ -11,8 +13,7 @@ export default class {
 
 	@Mutation(() => ErrorSchema!, { nullable: true })
 	async register(
-		@Arg("email") email: string,
-		@Arg("password") password: string
+		@Arg("data") { email, firstName, lastName, password }: RegisterInput
 	) {
 		if (await User.findOne({ where: { email } })) {
 			return {
@@ -24,6 +25,8 @@ export default class {
 		await User.create({
 			email,
 			password,
+			firstName,
+			lastName,
 		})
 			.save()
 			.then((err) => console.log(err));
@@ -31,3 +34,5 @@ export default class {
 		return null;
 	}
 }
+
+export default RegisterResolver;

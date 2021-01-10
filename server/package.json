@@ -5,6 +5,7 @@
 	"devDependencies": {
 		"@types/node": "^8.10.66",
 		"ts-node": "3.3.0",
+		"ts-node-dev": "^1.1.1",
 		"typescript": "^4.1.3"
 	},
 	"dependencies": {
@@ -31,8 +32,6 @@
 		"uuid": "^7.0.0"
 	},
 	"scripts": {
-		"start": "ts-node src/index.ts",
-		"dev": "npx nodemon --watch src -e ts,graphql --exec yarn start:dev",
-		"start:dev": "npx ts-node src/index.ts"
+		"start": "ts-node-dev --respawn src/index.ts"
 	}
 }

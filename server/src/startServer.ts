@@ -3,6 +3,7 @@ import { createConnection, getConnectionOptions } from "typeorm";
 import { ApolloServer, PubSub } from "apollo-server-express";
 import * as Express from "express";
 import genSchema from "./utils/genSchema";
+import { formatValidationError } from "./utils/formatValidationError";
 import "dotenv/config";
 
 export const startServer = async () => {
@@ -15,6 +16,7 @@ export const startServer = async () => {
 		schema: await genSchema(),
 		playground: true,
 		introspection: true,
+		formatError: formatValidationError,
 		context: ({}) => ({
 			pubSub,
 		}),

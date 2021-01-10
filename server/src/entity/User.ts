@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType, Root } from "type-graphql";
 import {
 	Entity,
 	Column,
@@ -7,20 +8,33 @@ import {
 } from "typeorm";
 import { v4 as uuidv4 } from "uuid";
 
+@ObjectType("User schema")
 @Entity("Users")
 export class User extends BaseEntity {
-	constructor() {
-		super();
-	}
-
+	@Field(() => ID)
 	@PrimaryColumn("uuid")
 	id: string;
 
-	@Column("text", { nullable: false, unique: true })
+	@Field(() => String!)
+	@Column("text", { unique: true })
 	email: string;
 
-	@Column("text", { nullable: false })
+	@Field(() => String!)
+	@Column()
 	password: string;
+
+	@Field(() => String!)
+	@Column()
+	firstName: string;
+
+	@Field(() => String!)
+	@Column({ nullable: true })
+	lastName: string;
+
+	@Field(() => String!)
+	name(@Root() parent: User): string {
+		return `${parent.firstName} ${parent.lastName}`;
+	}
 
 	@BeforeInsert()
 	async addId() {
