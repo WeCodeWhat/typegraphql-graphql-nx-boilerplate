@@ -1,11 +1,15 @@
 import { Arg, Resolver, Mutation, Query } from "type-graphql";
 import { User } from "../../../entity/User";
 import { Error as ErrorSchema } from "../../common/error.schema";
-import { ErrorMessage } from "./ErrorMessage";
 import { RegisterInput } from "./RegisterInput";
+import { UserRepository } from "../../repos/UserRepo";
+import { InjectRepository } from "typeorm-typedi-extensions";
 
 @Resolver((of) => User)
 class RegisterResolver {
+	@InjectRepository(UserRepository)
+	private readonly userRepository: UserRepository;
+
 	@Query(() => String)
 	hello() {
 		return "Hello World";
@@ -15,23 +19,14 @@ class RegisterResolver {
 	async register(
 		@Arg("data") { email, firstName, lastName, password }: RegisterInput
 	) {
-		if (await User.findOne({ where: { email } })) {
-			return {
-				path: "email",
-				message: ErrorMessage.emailIsRegister,
-			};
-		}
-
-		await User.create({
+		const res = await this.userRepository.findByEmailOrCreate({
 			email,
-			password,
 			firstName,
 			lastName,
-		})
-			.save()
-			.then((err) => console.log(err));
+			password,
+		});
 
-		return null;
+		return res;
 	}
 }
 
