@@ -9,7 +9,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import * as bcrypt from "bcrypt";
 
-@ObjectType("User schema")
+@ObjectType("UserSchema")
 @Entity("Users")
 export class User extends BaseEntity {
 	@Field(() => ID)

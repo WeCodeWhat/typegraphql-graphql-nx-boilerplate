@@ -6,6 +6,16 @@ import genSchema from "./utils/genSchema";
 import { formatValidationError } from "./utils/formatValidationError";
 import "dotenv/config";
 
+const webSocketOptions = {
+	path: "/subscriptions",
+	onConnect: () => {
+		console.log("GraphQL Subscription connected!");
+	},
+	onDisconnect: () => {
+		console.log("GraphQL Subscription disconnected!");
+	},
+};
+
 export const startServer = async () => {
 	const connectionOptions = await getConnectionOptions("development");
 	await createConnection({ ...connectionOptions, name: "default" });
@@ -16,6 +26,7 @@ export const startServer = async () => {
 		schema: await genSchema(),
 		playground: true,
 		introspection: true,
+		subscriptions: webSocketOptions,
 		formatError: formatValidationError,
 		context: ({}) => ({
 			pubSub,

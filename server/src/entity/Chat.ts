@@ -10,7 +10,7 @@ import {
 import { User } from "./User";
 import { v4 as uuidv4 } from "uuid";
 
-@ObjectType()
+@ObjectType("ChatSchema")
 @Entity("Chat")
 export class Chat extends BaseEntity {
 	@Field(() => ID)

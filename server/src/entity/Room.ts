@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Chat } from "./Chat";
 import { ValidateNested } from "class-validator";
 
-@ObjectType()
+@ObjectType("RoomSchema")
 @Entity("Room")
 export class Room extends BaseEntity {
 	@Field(() => ID)

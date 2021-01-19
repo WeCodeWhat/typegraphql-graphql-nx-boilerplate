@@ -2,13 +2,12 @@ import {
 	Arg,
 	Resolver,
 	Mutation,
-	Query,
 	PubSub,
-	PubSubEngine,
 	Subscription,
+	Root,
+	Publisher,
 } from "type-graphql";
 import { User } from "../../../entity/User";
-// import { UserRepository } from "../../repos/UserRepo";
 import { ChatRepository } from "../../repos/ChatRepo";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Chat } from "../../../entity/Chat";
@@ -16,14 +15,16 @@ import { SendMessageInput } from "./SendMessageInput";
 import { RoomRepository } from "../../repos/RoomRepo";
 import { Error as ErrorSchema } from "../../common/error.schema";
 import { ErrorMessage } from "./ErrorMessage";
+import { Room } from "../../../entity/Room";
 
 enum SubTopic {
 	NEW_ROOM_MESSAGE_ADDED = "NEW_ROOM_MESSAGE_ADDED",
 }
+interface ChatPayload {
+	room: Room;
+}
 @Resolver((of) => User)
 class SendMessageResolver {
-	// @InjectRepository(UserRepository)
-	// private readonly userRepository: UserRepository;
 	@InjectRepository(ChatRepository)
 	private readonly chatRepository: ChatRepository;
 	@InjectRepository(RoomRepository)
@@ -33,14 +34,18 @@ class SendMessageResolver {
 		topics: SubTopic.NEW_ROOM_MESSAGE_ADDED,
 		filter: ({ payload, args }) => args.priorities.includes(payload.priority),
 	})
-	newRoomMessageAdded(): any {}
+	newRoomMessageAdded(@Root() chatPayload: ChatPayload): Room {
+		return chatPayload.room;
+	}
 
 	@Mutation(() => ErrorSchema!)
 	async sendMessage(
 		@Arg("data") { message, roomId }: SendMessageInput,
-		@PubSub() pubSub: PubSubEngine
+		@PubSub(SubTopic.NEW_ROOM_MESSAGE_ADDED) publish: Publisher<ChatPayload>
 	) {
-		const room = await this.roomRepository.findOne({ where: { id: roomId } });
+		const room = await this.roomRepository.findOne({
+			where: { id: roomId },
+		});
 		if (!room) {
 			return {
 				path: "roomId",
@@ -51,11 +56,8 @@ class SendMessageResolver {
 			.create({ message, sender: {} })
 			.save();
 		console.log(chatMessage);
-		room.history.push(chatMessage);
-		const payload: Chat = chatMessage;
-		await pubSub
-			.publish(SubTopic.NEW_ROOM_MESSAGE_ADDED, payload)
-			.catch((err) => console.log(err));
+		room?.history.push(chatMessage);
+		await publish({ room }).catch((err) => console.log(err));
 		return null;
 	}
 }
