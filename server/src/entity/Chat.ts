@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from "type-graphql";
 import {
+	BaseEntity,
 	BeforeInsert,
 	Column,
 	Entity,
@@ -11,7 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 
 @ObjectType()
 @Entity("Chat")
-export class Chat {
+export class Chat extends BaseEntity {
 	@Field(() => ID)
 	@PrimaryColumn("uuid")
 	id: string;

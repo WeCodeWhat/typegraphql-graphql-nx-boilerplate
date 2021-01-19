@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from "type-graphql";
 import {
+	BaseEntity,
 	BeforeInsert,
 	Column,
 	Entity,
@@ -13,7 +14,7 @@ import { ValidateNested } from "class-validator";
 
 @ObjectType()
 @Entity("Room")
-export class Room {
+export class Room extends BaseEntity {
 	@Field(() => ID)
 	@PrimaryColumn("uuid")
 	id: string;
