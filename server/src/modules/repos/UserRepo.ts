@@ -4,15 +4,17 @@ import { ErrorMessage } from "../user/register/ErrorMessage";
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
+	async findByEmail(email: string | undefined) {
+		return await this.findOne({ where: { email } });
+	}
 	async findByEmailOrCreate({
 		email,
 		firstName,
 		lastName,
 		password,
 	}: Partial<User>) {
-		const user = await this.findOne({ where: { email } });
+		const user = await this.findByEmail(email);
 		if (!!user) {
-			console.log("err");
 			return {
 				path: "email",
 				message: ErrorMessage.emailIsRegister,
