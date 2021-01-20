@@ -1,14 +1,30 @@
-export interface GQLResolverFncMap {
-	[key: string]: {
-		[key: string]: GQLResolverFnc;
-	};
+import { PubSub } from "apollo-server-express";
+import { Request } from "express";
+import { Session } from "express-session";
+import { Redis } from "ioredis";
+
+declare module "express-session" {
+	export interface SessionData {
+		cookie: Cookie;
+		userId: string;
+	}
 }
 
-export type GQLResolverFnc = (
-	root: any,
-	context: Context,
-	args: any,
-	info: any
-) => any;
+export interface GQLDataMapper {
+	context: GQLContext;
+	root: any;
+	info: any;
+	args: any;
+}
 
-export interface Context {}
+export interface SessionStorage extends Session {
+	userId?: string;
+}
+
+export type GQLContext = {
+	req: Request;
+	pubSub: PubSub;
+	session: SessionStorage;
+	url: string;
+	redis: Redis;
+};

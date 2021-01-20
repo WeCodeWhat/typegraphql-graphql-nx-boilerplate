@@ -7,23 +7,20 @@ import {
 	Root,
 	Publisher,
 } from "type-graphql";
-import { User } from "../../../entity/User";
 import { ChatRepository } from "../../repos/ChatRepo";
 import { InjectRepository } from "typeorm-typedi-extensions";
-import { Chat } from "../../../entity/Chat";
 import { SendMessageInput } from "./SendMessageInput";
 import { RoomRepository } from "../../repos/RoomRepo";
 import { Error as ErrorSchema } from "../../common/error.schema";
 import { ErrorMessage } from "./ErrorMessage";
-import { Room } from "../../../entity/Room";
+import { ChatPayload } from "../../common/chatPayload.schema";
+import { Chat } from "../../../entity/Chat";
 
 enum SubTopic {
 	NEW_ROOM_MESSAGE_ADDED = "NEW_ROOM_MESSAGE_ADDED",
 }
-interface ChatPayload {
-	room: Room;
-}
-@Resolver((of) => User)
+
+@Resolver((of) => Chat)
 class SendMessageResolver {
 	@InjectRepository(ChatRepository)
 	private readonly chatRepository: ChatRepository;
@@ -32,10 +29,10 @@ class SendMessageResolver {
 
 	@Subscription({
 		topics: SubTopic.NEW_ROOM_MESSAGE_ADDED,
-		filter: ({ payload, args }) => args.priorities.includes(payload.priority),
+		// filter: ({ payload, args }) => args.roomId === payload.roomId,
 	})
-	newRoomMessageAdded(@Root() chatPayload: ChatPayload): Room {
-		return chatPayload.room;
+	newRoomMessageAdded(@Root() chatPayload: ChatPayload): ChatPayload {
+		return chatPayload;
 	}
 
 	@Mutation(() => ErrorSchema!)
@@ -57,7 +54,9 @@ class SendMessageResolver {
 			.save();
 		console.log(chatMessage);
 		room?.history.push(chatMessage);
-		await publish({ room }).catch((err) => console.log(err));
+		await publish({ chat: chatMessage, roomId: room.id }).catch((err) =>
+			console.log(err)
+		);
 		return null;
 	}
 }

@@ -19,7 +19,13 @@ export class Room extends BaseEntity {
 	@PrimaryColumn("uuid")
 	id: string;
 
-	@Field(() => [User])
+	@Field(() => String)
+	name: string;
+
+	@Field(() => User!)
+	owner: User;
+
+	@Field(() => [User]!)
 	@OneToMany(() => User, (member) => member.id)
 	@ValidateNested()
 	members: User[];
