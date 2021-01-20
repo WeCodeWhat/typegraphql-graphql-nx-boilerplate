@@ -3,6 +3,7 @@ import "dotenv/config";
 import { EnvironmentType } from "../utils/environmentType";
 import { initializeRedisStore } from "./redis";
 
+// Must change the graphql playground "credential" from "omit" to "include"
 export const sessionConfiguration = session({
 	name: "qid",
 	secret: process.env.SESSION_SECRET as string,

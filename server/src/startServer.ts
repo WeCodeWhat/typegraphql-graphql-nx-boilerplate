@@ -9,10 +9,10 @@ import { formatValidationError } from "./utils/formatValidationError";
 import { sessionConfiguration } from "./helper/session";
 import { GQLContext } from "./utils/graphql-utils";
 import { redis } from "./helper/redis";
-import { GraphQLError } from "graphql";
-import { isInstance } from "class-validator";
+import { DEV_BASE_URL } from "./constants/global-variables";
 
 export const startServer = async () => {
+	await redis.flushall();
 	const connectionOptions = await getConnectionOptions("development");
 	await createConnection({ ...connectionOptions, name: "default" });
 
@@ -37,9 +37,11 @@ export const startServer = async () => {
 		}),
 	});
 
+	const corsOptions = { credentials: true, origin: DEV_BASE_URL };
+
 	const app = Express();
 	app.use(sessionConfiguration);
-	apolloServer.applyMiddleware({ app });
+	apolloServer.applyMiddleware({ app, cors: corsOptions });
 
 	const httpServer = http.createServer(app);
 	apolloServer.installSubscriptionHandlers(httpServer);

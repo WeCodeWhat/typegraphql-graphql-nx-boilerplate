@@ -34,8 +34,8 @@ class LoginResolver {
 				message: ErrorMessage.passwordIsNotMatch,
 			};
 		}
-		req.session.userId = user.id;
-		if (session.userId) {
+		session.userId = user.id;
+		if (req.sessionID) {
 			redis.lpush(`${USER_SESSION_ID_PREFIX}${user.id}`, user.id);
 		}
 		return null;

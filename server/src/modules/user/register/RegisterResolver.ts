@@ -1,9 +1,10 @@
-import { Arg, Resolver, Mutation, Query } from "type-graphql";
+import { Arg, Resolver, Mutation, Query, Ctx } from "type-graphql";
 import { User } from "../../../entity/User";
 import { Error as ErrorSchema } from "../../common/error.schema";
 import { RegisterInput } from "./RegisterInput";
 import { UserRepository } from "../../repos/UserRepo";
 import { InjectRepository } from "typeorm-typedi-extensions";
+import { GQLContext } from "../../../utils/graphql-utils";
 
 @Resolver((of) => User)
 class RegisterResolver {
@@ -11,7 +12,8 @@ class RegisterResolver {
 	private readonly userRepository: UserRepository;
 
 	@Query(() => String)
-	hello() {
+	hello(@Ctx() { req }: GQLContext) {
+		console.log(req.session);
 		return "Hello World";
 	}
 

@@ -43,7 +43,7 @@
 		"uuid": "^7.0.0"
 	},
 	"scripts": {
-		"start": "ts-node-dev --respawn src/index.ts",
-		"gen-env-types": " npx gen-env-types .env -o src/types/env.d.ts -e ."
+		"start": "cross-env SET NODE_ENV=`development` & ts-node-dev --respawn src/index.ts",
+		"gen-env-types": "npx gen-env-types .env -o src/types/env.d.ts -e ."
 	}
 }
