@@ -40,6 +40,11 @@ export class Room extends BaseEntity {
 	history: Chat[];
 
 	@BeforeInsert()
+	async addOwnerToMembers() {
+		this.members.push(this.owner);
+	}
+
+	@BeforeInsert()
 	async addId() {
 		this.id = uuidv4();
 	}
