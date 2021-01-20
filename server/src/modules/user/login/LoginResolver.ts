@@ -1,4 +1,4 @@
-import { Arg, Resolver, Mutation, Ctx, UseMiddleware } from "type-graphql";
+import { Arg, Resolver, Mutation, Ctx } from "type-graphql";
 import { User } from "../../../entity/User";
 import { Error as ErrorSchema } from "../../common/error.schema";
 import { LoginInput } from "./LoginInput";
@@ -9,14 +9,12 @@ import * as bcrypt from "bcrypt";
 import { GQLContext } from "../../../utils/graphql-utils";
 import { redis } from "../../../helper/redis";
 import { USER_SESSION_ID_PREFIX } from "../../../constants/global-variables";
-import { isAuth } from "../../middleware/isAuth";
 
 @Resolver((of) => User)
 class LoginResolver {
 	@InjectRepository(UserRepository)
 	private readonly userRepository: UserRepository;
 
-	@UseMiddleware(isAuth)
 	@Mutation(() => ErrorSchema!, { nullable: true })
 	async login(
 		@Arg("data") { email, password }: LoginInput,

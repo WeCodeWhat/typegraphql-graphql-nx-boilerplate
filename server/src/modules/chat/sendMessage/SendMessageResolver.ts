@@ -6,6 +6,7 @@ import {
 	Subscription,
 	Root,
 	Publisher,
+	UseMiddleware,
 } from "type-graphql";
 import { ChatRepository } from "../../repos/ChatRepo";
 import { InjectRepository } from "typeorm-typedi-extensions";
@@ -15,6 +16,7 @@ import { Error as ErrorSchema } from "../../common/error.schema";
 import { ErrorMessage } from "./ErrorMessage";
 import { ChatPayload } from "../../common/chatPayload.schema";
 import { Chat } from "../../../entity/Chat";
+import { isAuth } from "../../middleware/isAuth";
 
 enum SubTopic {
 	NEW_ROOM_MESSAGE_ADDED = "NEW_ROOM_MESSAGE_ADDED",
@@ -35,6 +37,7 @@ class SendMessageResolver {
 		return chatPayload;
 	}
 
+	@UseMiddleware(isAuth)
 	@Mutation(() => ErrorSchema!)
 	async sendMessage(
 		@Arg("data") { message, roomId }: SendMessageInput,
