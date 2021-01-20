@@ -3,7 +3,6 @@ import { Error as ErrorSchema } from "../../common/error.schema";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Room } from "../../../entity/Room";
 import { RoomRepository } from "../../repos/RoomRepo";
-import { GQLContext } from "../../../utils/graphql-utils";
 
 @Resolver((of) => Room)
 class RegisterResolver {

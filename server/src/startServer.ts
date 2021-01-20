@@ -9,6 +9,8 @@ import { formatValidationError } from "./utils/formatValidationError";
 import { sessionConfiguration } from "./helper/session";
 import { GQLContext } from "./utils/graphql-utils";
 import { redis } from "./helper/redis";
+import { GraphQLError } from "graphql";
+import { isInstance } from "class-validator";
 
 export const startServer = async () => {
 	const connectionOptions = await getConnectionOptions("development");
@@ -25,9 +27,7 @@ export const startServer = async () => {
 			onConnect: () => console.log("GraphQL Subscription connected!"),
 			onDisconnect: () => console.log("GraphQL Subscription disconnected!"),
 		},
-		formatError: () => {
-			return formatValidationError;
-		},
+		formatError: formatValidationError,
 		context: ({ req }: GQLContext) => ({
 			req,
 			redis,

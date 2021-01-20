@@ -9,14 +9,14 @@ import * as bcrypt from "bcrypt";
 import { GQLContext } from "../../../utils/graphql-utils";
 import { redis } from "../../../helper/redis";
 import { USER_SESSION_ID_PREFIX } from "../../../constants/global-variables";
-import { UserIsLoggedIn } from "../../middleware/authMiddleware";
+import { isAuth } from "../../middleware/isAuth";
 
 @Resolver((of) => User)
 class LoginResolver {
 	@InjectRepository(UserRepository)
 	private readonly userRepository: UserRepository;
 
-	@UseMiddleware(UserIsLoggedIn)
+	@UseMiddleware(isAuth)
 	@Mutation(() => ErrorSchema!, { nullable: true })
 	async login(
 		@Arg("data") { email, password }: LoginInput,
