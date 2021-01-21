@@ -56,7 +56,7 @@ class SendMessageResolver {
 			.create({ message, sender: {} })
 			.save();
 		console.log(chatMessage);
-		room?.history.push(chatMessage);
+		room?.history.push(chatMessage.id);
 		await publish({ chat: chatMessage, roomId: room.id }).catch((err) =>
 			console.log(err)
 		);

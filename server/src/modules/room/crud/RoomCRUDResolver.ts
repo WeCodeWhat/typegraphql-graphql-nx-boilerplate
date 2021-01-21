@@ -13,6 +13,7 @@ import { RoomRepository } from "../../repos/RoomRepo";
 import { isAuth } from "../../middleware/isAuth";
 import { GQLContext } from "../../../utils/graphql-utils";
 import { UserRepository } from "../../repos/UserRepo";
+import { AddNewRoomInput } from "./RoomCRUDInput";
 
 @Resolver((of) => Room)
 class RoomCRUDResolver {
@@ -24,9 +25,16 @@ class RoomCRUDResolver {
 	@UseMiddleware(isAuth)
 	@Mutation(() => ErrorSchema!, { nullable: true })
 	async addNewRoom(
-		@Arg("data") { name }: Room, //TODO
+		@Arg("data") { name }: AddNewRoomInput, //TODO
 		@Ctx() { session }: GQLContext
 	) {
+		const room = await this.roomRepository.find({ where: { name } });
+		if (room.length > 0) {
+			return {
+				path: "name",
+				message: "This room has been created",
+			};
+		}
 		const user = await this.userRepository.findOne({
 			where: { id: session.userId },
 		});

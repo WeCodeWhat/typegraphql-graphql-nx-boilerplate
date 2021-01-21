@@ -4,7 +4,9 @@ import {
 	BeforeInsert,
 	Column,
 	Entity,
-	OneToMany,
+	JoinColumn,
+	ManyToOne,
+	OneToOne,
 	PrimaryColumn,
 } from "typeorm";
 import { User } from "./User";
@@ -19,29 +21,36 @@ export class Room extends BaseEntity {
 	@PrimaryColumn("uuid")
 	id: string;
 
-	@Field(() => String)
+	@Field(() => String!)
+	@Column("text")
 	name: string;
 
 	@Field(() => User!)
+	@OneToOne(() => User, (member) => member.id, {
+		cascade: true,
+	})
+	@JoinColumn()
 	owner: User;
 
 	@Field(() => [User]!)
-	@OneToMany(() => User, (member) => member.id)
+	@ManyToOne(() => User, (member) => member.id)
+	@Column("text", { array: true, default: {} })
 	@ValidateNested()
-	members: User[];
+	members: string[];
 
 	@Field(() => String!)
 	@Column("text", { nullable: false, default: new Date().toISOString() })
 	createdAt: string;
 
 	@Field(() => [Chat])
-	@OneToMany(() => Chat, (chat) => chat.id)
+	@ManyToOne(() => Chat, (chat) => chat.id)
 	@ValidateNested()
-	history: Chat[];
+	@Column("text", { array: true, default: {} })
+	history: string[];
 
 	@BeforeInsert()
 	async addOwnerToMembers() {
-		this.members.push(this.owner);
+		this.members.push(this.owner.id);
 	}
 
 	@BeforeInsert()
