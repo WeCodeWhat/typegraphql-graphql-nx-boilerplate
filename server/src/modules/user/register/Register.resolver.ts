@@ -12,8 +12,8 @@ class RegisterResolver {
 	private readonly userRepository: UserRepository;
 
 	@Query(() => String)
-	hello(@Ctx() { req }: GQLContext) {
-		console.log(req.session);
+	hello(@Ctx() { request }: GQLContext) {
+		console.log(request.session);
 		return "Hello World";
 	}
 

@@ -22,7 +22,7 @@ export interface SessionStorage extends Session {
 }
 
 export type GQLContext = {
-	req: Request;
+	request: Request;
 	pubSub: PubSub;
 	session: SessionStorage;
 	url: string;

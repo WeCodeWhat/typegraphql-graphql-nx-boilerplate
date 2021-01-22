@@ -18,7 +18,7 @@ class LoginResolver {
 	@Mutation(() => ErrorSchema!, { nullable: true })
 	async login(
 		@Arg("data") { email, password }: LoginInput,
-		@Ctx() { req, session }: GQLContext
+		@Ctx() { request, session }: GQLContext
 	) {
 		const user = await this.userRepository.findByEmail(email);
 		if (!user) {
@@ -35,7 +35,7 @@ class LoginResolver {
 			};
 		}
 		session.userId = user.id;
-		if (req.sessionID) {
+		if (request.sessionID) {
 			redis.lpush(`${USER_SESSION_ID_PREFIX}${user.id}`, user.id);
 		}
 		return null;
