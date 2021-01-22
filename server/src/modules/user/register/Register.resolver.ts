@@ -1,7 +1,7 @@
 import { Arg, Resolver, Mutation, Query, Ctx } from "type-graphql";
 import { User } from "../../../entity/User";
 import { Error as ErrorSchema } from "../../common/error.schema";
-import { RegisterInput } from "./RegisterInput";
+import { RegisterInput } from "./Register.input";
 import { UserRepository } from "../../repos/UserRepo";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { GQLContext } from "../../../utils/graphql-utils";

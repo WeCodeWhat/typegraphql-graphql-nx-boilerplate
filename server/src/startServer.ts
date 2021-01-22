@@ -10,22 +10,28 @@ import { sessionConfiguration } from "./helper/session";
 import { GQLContext } from "./utils/graphql-utils";
 import { redis } from "./helper/redis";
 import { DEV_BASE_URL } from "./constants/global-variables";
+import { GQLPlaygroundConfig } from "./config/GQLPlayground.config";
+import { EnvironmentType } from "./utils/environmentType";
 
 export const startServer = async () => {
-	await redis.flushall();
+	if (process.env.NODE_ENV !== EnvironmentType.PROD) {
+		await redis.flushall();
+	}
 	const connectionOptions = await getConnectionOptions("development");
 	await createConnection({ ...connectionOptions, name: "default" });
 
 	const pubSub = new PubSub();
-	const schemas = await genSchema();
 
 	const apolloServer = new ApolloServer({
-		schema: schemas,
-		playground: true,
+		schema: await genSchema(),
+		playground: {
+			settings: GQLPlaygroundConfig,
+		},
 		introspection: true,
 		subscriptions: {
-			onConnect: () => console.log("GraphQL Subscription connected!"),
-			onDisconnect: () => console.log("GraphQL Subscription disconnected!"),
+			onConnect: () => console.log("GraphQL Subscription Server connected!"),
+			onDisconnect: () =>
+				console.log("GraphQL Subscription Server disconnected!"),
 		},
 		formatError: formatValidationError,
 		context: ({ req }: GQLContext) => ({
@@ -41,18 +47,17 @@ export const startServer = async () => {
 
 	const app = Express();
 	app.use(sessionConfiguration);
-	apolloServer.applyMiddleware({ app, cors: corsOptions });
-
 	const httpServer = http.createServer(app);
+	apolloServer.applyMiddleware({ app, cors: corsOptions });
 	apolloServer.installSubscriptionHandlers(httpServer);
 
-	const PORT = process.env.PORT ? process.env.PORT : 4000;
+	const PORT = process.env.PORT || 5000;
 	httpServer.listen(PORT, () => {
 		console.log(
-			`server ready at http://localhost:${PORT}${apolloServer.graphqlPath}`
+			`Server is ready at http://localhost:${PORT}${apolloServer.graphqlPath}`
 		);
 		console.log(
-			`Subscriptions ready at ws://localhost:${PORT}${apolloServer.subscriptionsPath}`
+			`Subscription Server is ready at ws://localhost:${PORT}${apolloServer.subscriptionsPath}`
 		);
 	});
 };

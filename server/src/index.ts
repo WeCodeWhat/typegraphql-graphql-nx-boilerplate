@@ -4,4 +4,4 @@ import * as typeorm from "typeorm";
 
 typeorm.useContainer(Container);
 
-startServer();
+startServer().catch((err) => console.log(err));

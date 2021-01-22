@@ -13,7 +13,7 @@ import { RoomRepository } from "../../repos/RoomRepo";
 import { isAuth } from "../../middleware/isAuth";
 import { GQLContext } from "../../../utils/graphql-utils";
 import { UserRepository } from "../../repos/UserRepo";
-import { AddNewRoomInput } from "./RoomCRUDInput";
+import { AddNewRoomInput } from "./RoomCRUD.input";
 
 @Resolver((of) => Room)
 class RoomCRUDResolver {

@@ -1,19 +1,12 @@
 import { GraphQLSchema } from "graphql";
 import { buildSchema } from "type-graphql";
 import { Container } from "typedi";
-import RegisterResolver from "../modules/user/register/RegisterResolver";
-import LoginResolver from "../modules/user/login/LoginResolver";
-import SendMessageResolver from "../modules/chat/sendMessage/SendMessageResolver";
-import RoomCRUDResolver from "../modules/room/crud/RoomCRUDResolver";
+import * as path from "path";
 
 const genSchema = async (): Promise<GraphQLSchema> => {
+	const modulePath = "../modules/**/*.resolver.ts";
 	const schema = await buildSchema({
-		resolvers: [
-			RegisterResolver,
-			LoginResolver,
-			SendMessageResolver,
-			RoomCRUDResolver,
-		],
+		resolvers: [path.join(__dirname, modulePath)],
 		container: Container,
 	});
 

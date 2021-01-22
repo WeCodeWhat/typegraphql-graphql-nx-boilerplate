@@ -1,7 +1,7 @@
 import { Arg, Resolver, Mutation, Ctx } from "type-graphql";
 import { User } from "../../../entity/User";
 import { Error as ErrorSchema } from "../../common/error.schema";
-import { LoginInput } from "./LoginInput";
+import { LoginInput } from "./Login.input";
 import { UserRepository } from "../../repos/UserRepo";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { ErrorMessage } from "./ErrorMessage";

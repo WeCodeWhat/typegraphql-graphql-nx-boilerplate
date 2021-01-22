@@ -2,6 +2,7 @@ import { Error } from "../modules/common/error.schema";
 
 export const formatValidationError = (err: any): Error[] => {
 	const validationErrors: any[] = err.extensions.exception.validationErrors;
+	console.log(err);
 	const errors: Error[] = [];
 	if (validationErrors) {
 		validationErrors?.forEach(({ constraints }) => {

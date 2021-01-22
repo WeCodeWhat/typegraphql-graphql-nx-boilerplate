@@ -8,10 +8,11 @@ import {
 	Publisher,
 	UseMiddleware,
 	Ctx,
+	PubSubEngine,
 } from "type-graphql";
 import { ChatRepository } from "../../repos/ChatRepo";
 import { InjectRepository } from "typeorm-typedi-extensions";
-import { SendMessageInput } from "./SendMessageInput";
+import { SendMessageInput } from "./SendMessage.input";
 import { RoomRepository } from "../../repos/RoomRepo";
 import { Error as ErrorSchema } from "../../common/error.schema";
 import { ErrorMessage } from "./ErrorMessage";
@@ -39,6 +40,7 @@ class SendMessageResolver {
 		// filter: ({ payload, args }) => args.roomId === payload.roomId,
 	})
 	newRoomMessageAdded(@Root() chatPayload: ChatPayload): ChatPayload {
+		console.log(chatPayload);
 		return chatPayload;
 	}
 
@@ -46,7 +48,7 @@ class SendMessageResolver {
 	@Mutation(() => ErrorSchema!, { nullable: true })
 	async sendMessage(
 		@Arg("data") { message, roomId }: SendMessageInput,
-		@PubSub(SubTopic.NEW_ROOM_MESSAGE_ADDED) publish: Publisher<ChatPayload>,
+		@PubSub() pubSub: PubSubEngine,
 		@Ctx() { session }: GQLContext
 	) {
 		const room = await this.roomRepository.findOne({
@@ -73,10 +75,12 @@ class SendMessageResolver {
 			room.messages = chats;
 		}
 		room.save();
-		console.log(room);
-		await publish({ chat: chatMessage, roomId: room.id }).catch((err) =>
-			console.log(err)
-		);
+		await pubSub
+			.publish(SubTopic.NEW_ROOM_MESSAGE_ADDED, {
+				chat: chatMessage,
+				roomId: room.id,
+			})
+			.catch((err) => console.log(err));
 		return null;
 	}
 }
