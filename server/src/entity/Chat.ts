@@ -5,10 +5,13 @@ import {
 	Column,
 	Entity,
 	ManyToOne,
+	OneToMany,
+	OneToOne,
 	PrimaryColumn,
 } from "typeorm";
 import { User } from "./User";
 import { v4 as uuidv4 } from "uuid";
+import { Room } from "./Room";
 
 @ObjectType("ChatSchema")
 @Entity("Chat")
@@ -17,8 +20,7 @@ export class Chat extends BaseEntity {
 	@PrimaryColumn("uuid")
 	id: string;
 
-	@Field(() => User!)
-	@ManyToOne(() => User, (sender) => sender.id)
+	@ManyToOne(() => User, (user) => user.id)
 	sender: User;
 
 	@Field(() => String!)
@@ -27,6 +29,9 @@ export class Chat extends BaseEntity {
 	@Field(() => String!)
 	@Column("text", { nullable: false, default: new Date().getUTCDate() })
 	createdAt: string;
+
+	@ManyToOne(() => Room, (room) => room.messages)
+	room: Room;
 
 	@BeforeInsert()
 	async addId() {

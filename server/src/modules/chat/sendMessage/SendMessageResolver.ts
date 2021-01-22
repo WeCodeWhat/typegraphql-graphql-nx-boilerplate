@@ -7,6 +7,7 @@ import {
 	Root,
 	Publisher,
 	UseMiddleware,
+	Ctx,
 } from "type-graphql";
 import { ChatRepository } from "../../repos/ChatRepo";
 import { InjectRepository } from "typeorm-typedi-extensions";
@@ -17,6 +18,8 @@ import { ErrorMessage } from "./ErrorMessage";
 import { ChatPayload } from "../../common/chatPayload.schema";
 import { Chat } from "../../../entity/Chat";
 import { isAuth } from "../../middleware/isAuth";
+import { GQLContext } from "../../../utils/graphql-utils";
+import { UserRepository } from "../../repos/UserRepo";
 
 enum SubTopic {
 	NEW_ROOM_MESSAGE_ADDED = "NEW_ROOM_MESSAGE_ADDED",
@@ -28,6 +31,8 @@ class SendMessageResolver {
 	private readonly chatRepository: ChatRepository;
 	@InjectRepository(RoomRepository)
 	private readonly roomRepository: RoomRepository;
+	@InjectRepository(UserRepository)
+	private readonly userRepository: UserRepository;
 
 	@Subscription({
 		topics: SubTopic.NEW_ROOM_MESSAGE_ADDED,
@@ -38,10 +43,11 @@ class SendMessageResolver {
 	}
 
 	@UseMiddleware(isAuth)
-	@Mutation(() => ErrorSchema!)
+	@Mutation(() => ErrorSchema!, { nullable: true })
 	async sendMessage(
 		@Arg("data") { message, roomId }: SendMessageInput,
-		@PubSub(SubTopic.NEW_ROOM_MESSAGE_ADDED) publish: Publisher<ChatPayload>
+		@PubSub(SubTopic.NEW_ROOM_MESSAGE_ADDED) publish: Publisher<ChatPayload>,
+		@Ctx() { session }: GQLContext
 	) {
 		const room = await this.roomRepository.findOne({
 			where: { id: roomId },
@@ -52,11 +58,22 @@ class SendMessageResolver {
 				message: ErrorMessage.roomIdIsNotValid,
 			};
 		}
+		const users = await this.userRepository.find({
+			where: { id: session.userId },
+		});
 		const chatMessage = await this.chatRepository
-			.create({ message, sender: {} })
+			.create({ message, sender: users[0], room })
 			.save();
 		console.log(chatMessage);
-		room?.history.push(chatMessage.id);
+		if (room.messages) {
+			room.messages.push(chatMessage);
+		} else {
+			const chats: Chat[] = [];
+			chats.push(chatMessage);
+			room.messages = chats;
+		}
+		room.save();
+		console.log(room);
 		await publish({ chat: chatMessage, roomId: room.id }).catch((err) =>
 			console.log(err)
 		);

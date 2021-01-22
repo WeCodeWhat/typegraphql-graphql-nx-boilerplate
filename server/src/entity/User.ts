@@ -5,9 +5,11 @@ import {
 	PrimaryColumn,
 	BeforeInsert,
 	BaseEntity,
+	OneToMany,
 } from "typeorm";
 import { v4 as uuidv4 } from "uuid";
 import * as bcrypt from "bcrypt";
+import { Room } from "./Room";
 
 @ObjectType("UserSchema")
 @Entity("Users")
@@ -32,6 +34,9 @@ export class User extends BaseEntity {
 	@Column({ nullable: true })
 	lastName: string;
 
+	@OneToMany(() => Room, (room) => room.members)
+	room: Room[];
+	// External
 	@Field(() => String!)
 	name(@Root() parent: User): string {
 		return `${parent.firstName} ${parent.lastName}`;
