@@ -4,11 +4,12 @@ import { createConnection, getConnectionOptions } from "typeorm";
 import { GraphQLServer } from "graphql-yoga";
 import genSchema from "./utils/genSchema";
 import { sessionConfiguration } from "./helper/session";
-import { GQLContext } from "./utils/graphql-utils";
 import { redis } from "./helper/redis";
 import { DEV_BASE_URL } from "./constants/global-variables";
 import { EnvironmentType } from "./utils/environmentType";
 import { formatValidationError } from "./utils/formatValidationError";
+import { ContextParameters } from "graphql-yoga/dist/types";
+import { GQLContext } from "./utils/graphql-utils";
 
 export const startServer = async () => {
 	if (process.env.NODE_ENV !== EnvironmentType.PROD) {
@@ -19,8 +20,8 @@ export const startServer = async () => {
 
 	const server = new GraphQLServer({
 		schema: await genSchema(),
-		context: ({ request }: GQLContext) => ({
-			req: request,
+		context: ({ request }: ContextParameters): Partial<GQLContext> => ({
+			request,
 			redis,
 			session: request.session,
 			url: request.protocol + "://" + request.get("host"),

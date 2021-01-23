@@ -38,9 +38,10 @@ class LoginResolver {
 			};
 		}
 		session.userId = user.id;
-		if (request.sessionID) {
+		if (request?.sessionID) {
 			redis.lpush(`${USER_SESSION_ID_PREFIX}${user.id}`, user.id);
 		}
+		session.save();
 		return null;
 	}
 }
