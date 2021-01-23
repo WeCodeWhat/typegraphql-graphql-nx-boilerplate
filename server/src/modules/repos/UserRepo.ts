@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from "typeorm";
 import { User } from "../../entity/User";
-import { ErrorMessage } from "../user/register/ErrorMessage";
+import { ErrorMessage } from "../common/ErrorMessage";
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {

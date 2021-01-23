@@ -9,10 +9,6 @@ import { redis } from "./helper/redis";
 import { DEV_BASE_URL } from "./constants/global-variables";
 import { EnvironmentType } from "./utils/environmentType";
 import { formatValidationError } from "./utils/formatValidationError";
-import {
-	MutationValidationError,
-	FieldValidationError,
-} from "graphql-yup-middleware";
 
 export const startServer = async () => {
 	if (process.env.NODE_ENV !== EnvironmentType.PROD) {
@@ -23,7 +19,6 @@ export const startServer = async () => {
 
 	const server = new GraphQLServer({
 		schema: await genSchema(),
-		typeDefs: [MutationValidationError, FieldValidationError],
 		context: ({ request }: GQLContext) => ({
 			req: request,
 			redis,

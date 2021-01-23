@@ -5,7 +5,6 @@ import {
 	PubSub,
 	Subscription,
 	Root,
-	Publisher,
 	UseMiddleware,
 	Ctx,
 	PubSubEngine,
@@ -15,7 +14,7 @@ import { InjectRepository } from "typeorm-typedi-extensions";
 import { SendMessageInput } from "./SendMessage.input";
 import { RoomRepository } from "../../repos/RoomRepo";
 import { Error as ErrorSchema } from "../../common/error.schema";
-import { ErrorMessage } from "./ErrorMessage";
+import { ErrorMessage } from "../../common/ErrorMessage";
 import { ChatPayload } from "../../common/chatPayload.schema";
 import { Chat } from "../../../entity/Chat";
 import { isAuth } from "../../middleware/isAuth";
