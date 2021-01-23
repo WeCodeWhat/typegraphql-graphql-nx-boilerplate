@@ -8,8 +8,8 @@ import { redis } from "./helper/redis";
 import { DEV_BASE_URL } from "./constants/global-variables";
 import { EnvironmentType } from "./utils/environmentType";
 import { formatValidationError } from "./utils/formatValidationError";
-import { ContextParameters } from "graphql-yoga/dist/types";
 import { GQLContext } from "./utils/graphql-utils";
+import { ContextParameters } from "graphql-yoga/dist/types";
 
 export const startServer = async () => {
 	if (process.env.NODE_ENV !== EnvironmentType.PROD) {
@@ -23,8 +23,8 @@ export const startServer = async () => {
 		context: ({ request }: ContextParameters): Partial<GQLContext> => ({
 			request,
 			redis,
-			session: request.session,
-			url: request.protocol + "://" + request.get("host"),
+			session: request?.session,
+			url: request?.protocol + "://" + request?.get("host"),
 		}),
 	} as any);
 
