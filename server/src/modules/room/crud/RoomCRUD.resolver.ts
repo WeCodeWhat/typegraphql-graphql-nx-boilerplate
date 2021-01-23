@@ -14,6 +14,8 @@ import { isAuth } from "../../middleware/isAuth";
 import { GQLContext } from "../../../utils/graphql-utils";
 import { UserRepository } from "../../repos/UserRepo";
 import { AddNewRoomInput } from "./RoomCRUD.input";
+import { YUP_ROOMCRUD } from "../../common/yupSchema";
+import { yupValidateMiddleware } from "../../middleware/yupValidate";
 
 @Resolver((of) => Room)
 class RoomCRUDResolver {
@@ -22,7 +24,7 @@ class RoomCRUDResolver {
 	@InjectRepository(UserRepository)
 	private readonly userRepository: UserRepository;
 
-	@UseMiddleware(isAuth)
+	@UseMiddleware(isAuth, yupValidateMiddleware(YUP_ROOMCRUD))
 	@Mutation(() => ErrorSchema!, { nullable: true })
 	async addNewRoom(
 		@Arg("data") { name }: AddNewRoomInput, //TODO

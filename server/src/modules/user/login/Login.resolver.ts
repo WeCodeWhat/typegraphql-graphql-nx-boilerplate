@@ -10,13 +10,14 @@ import { redis } from "../../../helper/redis";
 import { USER_SESSION_ID_PREFIX } from "../../../constants/global-variables";
 import { ErrorMessage } from "../../common/ErrorMessage";
 import { yupValidateMiddleware } from "../../middleware/yupValidate";
-import { YUP_SCHEMA } from "../../common/yupSchema";
+import { YUP_LOGIN } from "../../common/yupSchema";
 
 @Resolver((of) => User)
 class LoginResolver {
 	@InjectRepository(UserRepository)
 	private readonly userRepository: UserRepository;
-	@UseMiddleware(yupValidateMiddleware(YUP_SCHEMA))
+
+	@UseMiddleware(yupValidateMiddleware(YUP_LOGIN))
 	@Mutation(() => ErrorSchema!, { nullable: true })
 	async login(
 		@Arg("data") { email, password }: LoginInput,

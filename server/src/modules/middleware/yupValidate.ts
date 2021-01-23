@@ -1,7 +1,6 @@
 import { GraphQLError } from "graphql";
 import { MiddlewareFn } from "type-graphql";
 import { ObjectSchema } from "yup";
-import { formatYupErrors } from "../../utils/formatYupErrors";
 import { GQLContext } from "../../utils/graphql-utils";
 
 export const yupValidateMiddleware = (
