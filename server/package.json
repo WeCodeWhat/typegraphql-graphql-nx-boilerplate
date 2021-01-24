@@ -1,11 +1,14 @@
 {
 	"name": "graphql-apollo-ts",
 	"version": "0.0.1",
+	"main": "dist/index",
+	"typings": "dist/index",
 	"description": "Awesome project developed with TypeORM.",
 	"devDependencies": {
 		"@types/bcrypt": "^3.0.0",
 		"@types/connect-redis": "0.0.16",
 		"@types/express-session": "^1.17.3",
+		"@types/graphql": "^14.5.0",
 		"@types/ioredis": "^4.19.1",
 		"@types/node": "^8.10.66",
 		"ts-node": "3.3.0",
@@ -47,7 +50,7 @@
 		"start": "cross-env SET NODE_ENV=`development` & ts-node-dev --respawn src/index.ts",
 		"gen-env-types": "npx gen-env-types .env -o src/types/env.d.ts -e ."
 	},
-	"peerDependencies": {
-		"graphql": "^0.11.0 || ^0.12.0 || ^0.13.0"
+	"resolutions": {
+		"graphql": "^15.0.0"
 	}
 }
