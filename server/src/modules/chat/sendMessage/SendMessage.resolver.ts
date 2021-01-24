@@ -8,6 +8,7 @@ import {
 	UseMiddleware,
 	Ctx,
 	PubSubEngine,
+	Publisher,
 } from "type-graphql";
 import { ChatRepository } from "../../repos/ChatRepo";
 import { InjectRepository } from "typeorm-typedi-extensions";
@@ -43,23 +44,24 @@ class SendMessageResolver {
 		}: {
 			payload: ChatPayload;
 			args: { data: NewRoomMessageInput };
-		}) => args.data.roomId === payload.chat.room.id,
+		}) => args.data.roomId === payload.room.id,
 		nullable: true,
 	})
 	newRoomMessageAdded(
 		@Root() chatPayload: ChatPayload,
 		@Arg("data") args: NewRoomMessageInput
-	): String {
+	): ChatPayload {
 		console.log(chatPayload);
-		console.log("Subscription");
-		return chatPayload.chat.message;
+		return {
+			...chatPayload,
+		};
 	}
 
 	@UseMiddleware(isAuth)
 	@Mutation(() => ErrorSchema!, { nullable: true })
 	async sendMessage(
 		@Arg("data") { message, roomId }: SendMessageInput,
-		@PubSub() pubSub: PubSubEngine,
+		@PubSub(SubTopic.NEW_ROOM_MESSAGE_ADDED) publish: Publisher<ChatPayload>,
 		@Ctx() { session }: GQLContext
 	) {
 		const room = await this.roomRepository.findOne({
@@ -85,11 +87,11 @@ class SendMessageResolver {
 			room.messages = chats;
 		}
 		room.save();
-		await pubSub
-			.publish(SubTopic.NEW_ROOM_MESSAGE_ADDED, {
-				chat: chatMessage,
-			})
-			.catch((err) => console.log(err));
+		await publish({
+			message: chatMessage.message,
+			room: chatMessage.room,
+			sender: chatMessage.sender,
+		}).catch((err) => console.log(err));
 		return null;
 	}
 }
