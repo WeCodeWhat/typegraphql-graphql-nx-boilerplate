@@ -27,7 +27,7 @@ class RoomCRUDResolver {
 	@UseMiddleware(isAuth, yupValidateMiddleware(YUP_ROOMCRUD))
 	@Mutation(() => ErrorSchema!, { nullable: true })
 	async addNewRoom(
-		@Arg("data") { name }: AddNewRoomInput, //TODO
+		@Arg("data") { name }: AddNewRoomInput,
 		@Ctx() { session }: GQLContext
 	) {
 		const room = await this.roomRepository.find({ where: { name } });

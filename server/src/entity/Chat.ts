@@ -5,13 +5,12 @@ import {
 	Column,
 	Entity,
 	ManyToOne,
-	OneToMany,
-	OneToOne,
 	PrimaryColumn,
 } from "typeorm";
 import { User } from "./User";
 import { v4 as uuidv4 } from "uuid";
 import { Room } from "./Room";
+import { getFullDayTime } from "../utils/date";
 
 @ObjectType("ChatSchema")
 @Entity("Chat")
@@ -24,10 +23,11 @@ export class Chat extends BaseEntity {
 	sender: User;
 
 	@Field(() => String!)
+	@Column("text", { nullable: false })
 	message: string;
 
 	@Field(() => String!)
-	@Column("text", { nullable: false, default: new Date().getUTCDate() })
+	@Column("text", { nullable: false, default: getFullDayTime() })
 	createdAt: string;
 
 	@ManyToOne(() => Room, (room) => room.messages)

@@ -5,7 +5,4 @@ import { Chat } from "../../entity/Chat";
 export class ChatPayload {
 	@Field(() => Chat!)
 	chat: Chat;
-
-	@Field(() => String!)
-	roomId: string;
 }

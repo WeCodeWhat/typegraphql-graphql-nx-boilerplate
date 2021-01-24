@@ -20,6 +20,7 @@ import { Chat } from "../../../entity/Chat";
 import { isAuth } from "../../middleware/isAuth";
 import { GQLContext } from "../../../utils/graphql-utils";
 import { UserRepository } from "../../repos/UserRepo";
+import { NewRoomMessageInput } from "./NewRoomMessage.input";
 
 enum SubTopic {
 	NEW_ROOM_MESSAGE_ADDED = "NEW_ROOM_MESSAGE_ADDED",
@@ -36,11 +37,22 @@ class SendMessageResolver {
 
 	@Subscription({
 		topics: SubTopic.NEW_ROOM_MESSAGE_ADDED,
-		// filter: ({ payload, args }) => args.roomId === payload.roomId,
+		filter: ({
+			payload,
+			args,
+		}: {
+			payload: ChatPayload;
+			args: { data: NewRoomMessageInput };
+		}) => args.data.roomId === payload.chat.room.id,
+		nullable: true,
 	})
-	newRoomMessageAdded(@Root() chatPayload: ChatPayload): ChatPayload {
+	newRoomMessageAdded(
+		@Root() chatPayload: ChatPayload,
+		@Arg("data") args: NewRoomMessageInput
+	): String {
 		console.log(chatPayload);
-		return chatPayload;
+		console.log("Subscription");
+		return chatPayload.chat.message;
 	}
 
 	@UseMiddleware(isAuth)
@@ -65,7 +77,6 @@ class SendMessageResolver {
 		const chatMessage = await this.chatRepository
 			.create({ message, sender: users[0], room })
 			.save();
-		console.log(chatMessage);
 		if (room.messages) {
 			room.messages.push(chatMessage);
 		} else {
@@ -77,7 +88,6 @@ class SendMessageResolver {
 		await pubSub
 			.publish(SubTopic.NEW_ROOM_MESSAGE_ADDED, {
 				chat: chatMessage,
-				roomId: room.id,
 			})
 			.catch((err) => console.log(err));
 		return null;
