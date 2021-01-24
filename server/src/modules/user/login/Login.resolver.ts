@@ -6,7 +6,6 @@ import { UserRepository } from "../../repos/UserRepo";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import * as bcrypt from "bcrypt";
 import { GQLContext } from "../../../utils/graphql-utils";
-import { redis } from "../../../helper/redis";
 import { USER_SESSION_ID_PREFIX } from "../../../constants/global-variables";
 import { ErrorMessage } from "../../common/ErrorMessage";
 import { yupValidateMiddleware } from "../../middleware/yupValidate";
@@ -21,7 +20,7 @@ class LoginResolver {
 	@Mutation(() => ErrorSchema!, { nullable: true })
 	async login(
 		@Arg("data") { email, password }: LoginInput,
-		@Ctx() { request, session }: GQLContext
+		@Ctx() { request, session, redis }: GQLContext
 	) {
 		const user = await this.userRepository.findByEmail(email);
 		if (!user) {
