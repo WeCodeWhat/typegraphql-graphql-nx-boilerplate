@@ -10,13 +10,18 @@ import { EnvironmentType } from "./utils/environmentType";
 import { formatValidationError } from "./utils/formatValidationError";
 import { GQLContext } from "./utils/graphql-utils";
 import { ContextParameters } from "graphql-yoga/dist/types";
+import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 
 export const startServer = async () => {
 	if (process.env.NODE_ENV !== EnvironmentType.PROD) {
 		await new REDIS().server.flushall();
 	}
 	const connectionOptions = await getConnectionOptions("development");
-	await createConnection({ ...connectionOptions, name: "default" });
+	await createConnection({
+		...connectionOptions,
+		name: "default",
+		namingStrategy: new SnakeNamingStrategy(),
+	});
 
 	const server = new GraphQLServer({
 		schema: await genSchema(),

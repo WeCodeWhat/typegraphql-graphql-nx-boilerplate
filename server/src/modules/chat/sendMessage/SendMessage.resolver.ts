@@ -7,7 +7,6 @@ import {
 	Root,
 	UseMiddleware,
 	Ctx,
-	PubSubEngine,
 	Publisher,
 } from "type-graphql";
 import { ChatRepository } from "../../repos/ChatRepo";
