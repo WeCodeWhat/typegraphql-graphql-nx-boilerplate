@@ -16,10 +16,14 @@ export const startServer = async () => {
 	if (process.env.NODE_ENV !== EnvironmentType.PROD) {
 		await new REDIS().server.flushall();
 	}
-	const connectionOptions = await getConnectionOptions("development");
+	const connectionOptions = await getConnectionOptions("default");
+	console.log(
+		process.env.NODE_ENV,
+		process.env.NODE_ENV === EnvironmentType.TEST
+	);
 	await createConnection({
 		...connectionOptions,
-		name: "default",
+		dropSchema: process.env.NODE_ENV === EnvironmentType.TEST,
 		namingStrategy: new SnakeNamingStrategy(),
 	});
 

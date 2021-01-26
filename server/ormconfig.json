@@ -2,7 +2,7 @@
 	"type": "postgres",
 	"host": "localhost",
 	"port": 5432,
-	"name": "development",
+	"name": "default",
 	"username": "postgres",
 	"password": "Cqt20011101",
 	"database": "apollo-ts",
@@ -16,5 +16,5 @@
 		"migrationsDir": "src/migration",
 		"subscribersDir": "src/subscriber"
 	},
-	"dropSchema": false
+	"dropSchema": true
 }
