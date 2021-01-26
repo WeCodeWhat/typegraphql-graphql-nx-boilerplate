@@ -32,7 +32,7 @@ const ChatBubble: React.FC<Partial<Props>> = (args) => {
           <Grid
             container
             style={{
-              marginLeft: '380px',
+              marginLeft: '300px',
               borderRadius: '8px',
               color: 'black',
             }}

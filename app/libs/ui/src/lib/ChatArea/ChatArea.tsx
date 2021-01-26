@@ -25,8 +25,8 @@ export const ChatArea: React.FC<Props> = () => {
       >
         <div>Python 😯 5 members</div>
       </FlexBox>
-      <FlexBox style={{ padding: '20px 50px', height: '100%' }}>
-        <Grid item xs={9}>
+      <FlexBox style={{ padding: '20px 0px', height: '100%' }}>
+        <Grid item xs={12}>
           <List
             style={{
               height: '70vh',

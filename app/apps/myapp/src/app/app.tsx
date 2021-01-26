@@ -2,7 +2,7 @@ import React from 'react';
 import 'emoji-mart/css/emoji-mart.css';
 import { Grid } from '@material-ui/core';
 import './app.scss';
-import { Rooms, FlexBox, FlexDirection, ChatArea, TextAlign } from '@app/ui';
+import { Rooms, FlexBox, FlexDirection, ChatArea } from '@app/ui';
 // import { Picker } from 'emoji-mart';
 
 export function App() {
@@ -30,10 +30,13 @@ export function App() {
       <Grid
         item={true}
         xs={12}
-        lg={9}
+        lg={6}
         style={{ backgroundColor: 'rgb(242, 242, 242)' }}
       >
         <ChatArea />
+      </Grid>
+      <Grid item={true} xs={12} lg={3}>
+        Hello
       </Grid>
     </Grid>
   );
