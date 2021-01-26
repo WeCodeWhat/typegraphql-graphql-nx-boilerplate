@@ -24,6 +24,11 @@ class RoomCRUDResolver {
 	@InjectRepository(UserRepository)
 	private readonly userRepository: UserRepository;
 
+	@Query(() => [Room]!)
+	async getRooms() {
+		return await this.roomRepository.find();
+	}
+
 	@UseMiddleware(isAuth, yupValidateMiddleware(YUP_ROOMCRUD))
 	@Mutation(() => ErrorSchema!, { nullable: true })
 	async addNewRoom(
