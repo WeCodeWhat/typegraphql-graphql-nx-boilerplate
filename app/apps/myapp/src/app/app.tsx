@@ -27,7 +27,12 @@ export function App() {
           <Rooms />
         </FlexBox>
       </Grid>
-      <Grid item={true} xs={12} lg={9} style={{ backgroundColor: 'red' }}>
+      <Grid
+        item={true}
+        xs={12}
+        lg={9}
+        style={{ backgroundColor: 'rgb(242, 242, 242)' }}
+      >
         Chats
       </Grid>
     </Grid>
