@@ -5,7 +5,7 @@ import {
 	PrimaryColumn,
 	BeforeInsert,
 	BaseEntity,
-	OneToMany,
+	ManyToMany,
 } from "typeorm";
 import { v4 as uuidv4 } from "uuid";
 import * as bcrypt from "bcrypt";
@@ -34,7 +34,7 @@ export class User extends BaseEntity {
 	@Column({ nullable: true })
 	lastName: string;
 
-	@OneToMany(() => Room, (room) => room.members)
+	@ManyToMany(() => Room, (room) => room.members)
 	room: Room[];
 	// External
 	@Field(() => String!)

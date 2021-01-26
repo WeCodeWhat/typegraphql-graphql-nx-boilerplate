@@ -4,6 +4,9 @@ import {
 	BeforeInsert,
 	Column,
 	Entity,
+	JoinColumn,
+	JoinTable,
+	ManyToMany,
 	ManyToOne,
 	OneToMany,
 	PrimaryColumn,
@@ -27,13 +30,38 @@ export class Room extends BaseEntity {
 	createdAt: string;
 
 	@ManyToOne(() => User, (user) => user.id)
+	@JoinColumn()
 	owner: User;
 
-	@OneToMany(() => User, (user) => user.room)
+	@Field(() => [User!])
+	@ManyToMany(() => User, (user) => user.room)
+	@JoinTable()
 	members: User[];
 
+	@Field(() => [Chat!])
 	@OneToMany(() => Chat, (chat) => chat.room)
 	messages: Chat[];
+
+	@Field(() => String!)
+	@Column("text", { nullable: true })
+	ownerId: string;
+
+	@BeforeInsert()
+	async addOwnerId() {
+		if (!this.ownerId) {
+			this.ownerId = this.owner.id;
+		}
+	}
+
+	@BeforeInsert()
+	async addOwnerToMembers() {
+		if (!this.members) {
+			this.members = [];
+			this.members.push(this.owner);
+		} else {
+			this.members.push(this.owner);
+		}
+	}
 
 	@BeforeInsert()
 	async addId() {

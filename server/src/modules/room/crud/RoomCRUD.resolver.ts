@@ -16,6 +16,7 @@ import { UserRepository } from "../../repos/UserRepo";
 import { AddNewRoomInput } from "./RoomCRUD.input";
 import { YUP_ROOMCRUD } from "../../common/yupSchema";
 import { yupValidateMiddleware } from "../../middleware/yupValidate";
+import { User } from "../../../entity/User";
 
 @Resolver((of) => Room)
 class RoomCRUDResolver {
@@ -26,7 +27,18 @@ class RoomCRUDResolver {
 
 	@Query(() => [Room]!)
 	async getRooms() {
-		return await this.roomRepository.find();
+		const room = await this.roomRepository.find({
+			relations: ["members", "messages"],
+		});
+		console.log(room);
+		return room;
+	}
+
+	@Query(() => [User]!)
+	async getOwner() {
+		const users: User[] = [];
+		(await this.roomRepository.find()).map((room) => users.push(room.owner));
+		return users;
 	}
 
 	@UseMiddleware(isAuth, yupValidateMiddleware(YUP_ROOMCRUD))
@@ -45,12 +57,12 @@ class RoomCRUDResolver {
 		const user = await this.userRepository.findOne({
 			where: { id: session.userId },
 		});
-		this.roomRepository
-			.create({
-				name,
-				owner: user,
-			})
-			.save();
+		await this.userRepository.findRoomAndUpdate(user as User, room[0]);
+		const createdRoom = await this.roomRepository.create({
+			name,
+			owner: user,
+		});
+		await this.roomRepository.findMembersAndUpdate(createdRoom, user as User);
 
 		return null;
 	}

@@ -78,14 +78,7 @@ class SendMessageResolver {
 		const chatMessage = await this.chatRepository
 			.create({ message, sender: users[0], room })
 			.save();
-		if (room.messages) {
-			room.messages.push(chatMessage);
-		} else {
-			const chats: Chat[] = [];
-			chats.push(chatMessage);
-			room.messages = chats;
-		}
-		room.save();
+		await this.roomRepository.findMessageAndUpdate(room, chatMessage);
 		await publish({
 			message: chatMessage.message,
 			room: chatMessage.room,

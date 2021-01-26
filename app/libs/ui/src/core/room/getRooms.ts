@@ -6,6 +6,16 @@ export const GET_ROOMS = gql`
       id
       name
       createdAt
+      ownerId
+      members {
+        id
+        email
+        name
+      }
+      messages {
+        message
+        createdAt
+      }
     }
   }
 `;
