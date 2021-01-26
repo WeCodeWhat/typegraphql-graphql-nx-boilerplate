@@ -1,7 +1,8 @@
 import React from 'react';
 import 'emoji-mart/css/emoji-mart.css';
-import { Card, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import './app.scss';
+import { Rooms, FlexBox, FlexDirection } from '@app/ui';
 // import { Picker } from 'emoji-mart';
 
 export function App() {
@@ -12,10 +13,22 @@ export function App() {
   return (
     <Grid container spacing={0} style={{ minHeight: '100vh' }}>
       <Grid item={true} xs={12} lg={3}>
-        Hello
+        <FlexBox direction={FlexDirection.column} style={{ padding: '20px' }}>
+          <FlexBox>
+            <div style={{ marginBottom: '5px', fontWeight: 'bold' }}>Rooms</div>
+          </FlexBox>
+          <div
+            style={{
+              height: '1px',
+              backgroundColor: 'lightgray',
+              margin: '15px 0px ',
+            }}
+          />
+          <Rooms />
+        </FlexBox>
       </Grid>
       <Grid item={true} xs={12} lg={9} style={{ backgroundColor: 'red' }}>
-        World
+        Chats
       </Grid>
     </Grid>
   );
