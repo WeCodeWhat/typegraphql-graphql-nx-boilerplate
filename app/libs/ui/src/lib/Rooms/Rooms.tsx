@@ -1,8 +1,8 @@
 import { useQuery } from '@apollo/client';
-import { Typography, Divider } from '@material-ui/core';
+import 'react-chat-elements/dist/main.css';
 import React from 'react';
 import { GET_ROOMS } from '../../core/room/getRooms';
-import { FlexBox, FlexDirection } from '../FlexBox/FlexBox';
+import { ChatItem } from 'react-chat-elements';
 const moment = require('moment');
 
 export const Rooms: React.FC<{}> = () => {
@@ -23,22 +23,16 @@ export const Rooms: React.FC<{}> = () => {
         <div>Loading....</div>
       ) : (
         (data as any).getRooms.map((d: Room) => (
-          <FlexBox
-            direction={FlexDirection.column}
-            style={{
-              marginBottom: '10px',
-              border: '1px solid lightgray',
-              padding: '5px 10px',
-              borderRadius: '7px',
-            }}
-          >
-            <Typography variant="subtitle1" color="initial">
-              {d.name}
-            </Typography>
-            <Typography variant="caption" color="initial">
-              {moment(d.createdAt).format('DD-MM-YYYY')}
-            </Typography>
-          </FlexBox>
+          <ChatItem
+            avatar={
+              'https://miro.medium.com/max/500/1*jABZh1fqdQOC9KIRMx-K4A.png'
+            }
+            alt={'GraphQL'}
+            title={d.name}
+            subtitle={'What are you doing?'}
+            date={moment(d.createdAt).format('DD-MM-YYYY')}
+            unread={0}
+          />
         ))
       )}
     </div>
