@@ -9,18 +9,26 @@ export enum FlexDirection {
 export enum FlexJustify {
   center = 'center',
   spaceBetween = 'space-between',
+  flexEnd = 'flex-end',
 }
 
+export enum AlignItem {
+  center = 'center',
+  left = 'left',
+  right = 'right',
+}
 interface Props {
   direction: FlexDirection;
   justify: FlexJustify;
   style: CSSProperties;
+  align: AlignItem;
 }
 
 export const FlexBox: React.FC<Partial<Props>> = ({
   direction,
   children,
   justify,
+  align,
   style,
 }) => {
   return (
@@ -30,6 +38,7 @@ export const FlexBox: React.FC<Partial<Props>> = ({
         display: 'flex',
         flexDirection: direction,
         justifyContent: justify,
+        alignItems: align,
       }}
     >
       {children}
