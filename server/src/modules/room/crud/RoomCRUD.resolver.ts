@@ -14,7 +14,7 @@ import { isAuth } from "../../middleware/isAuth";
 import { GQLContext } from "../../../utils/graphql-utils";
 import { UserRepository } from "../../repos/UserRepo";
 import { AddNewRoomInput } from "./RoomCRUD.input";
-import { YUP_ROOMCRUD } from "../../common/yupSchema";
+import { YUP_ROOMCRUD, YUP_UUID } from "../../common/yupSchema";
 import { yupValidateMiddleware } from "../../middleware/yupValidate";
 import { User } from "../../../entity/User";
 
@@ -27,18 +27,20 @@ class RoomCRUDResolver {
 
 	@Query(() => [Room]!)
 	async getRooms() {
-		const room = await this.roomRepository.find({
-			relations: ["members", "messages"],
+		return await this.roomRepository.find({
+			relations: ["members", "messages", "messages.sender"],
 		});
-		console.log(room);
-		return room;
 	}
 
-	@Query(() => [User]!)
-	async getOwner() {
-		const users: User[] = [];
-		(await this.roomRepository.find()).map((room) => users.push(room.owner));
-		return users;
+	@UseMiddleware(yupValidateMiddleware(YUP_UUID))
+	@Query(() => Room, { nullable: true })
+	async getRoom(@Arg("id") id: String) {
+		return await this.roomRepository.findOne({
+			relations: ["members", "messages", "messages.sender"],
+			where: {
+				id,
+			},
+		});
 	}
 
 	@UseMiddleware(isAuth, yupValidateMiddleware(YUP_ROOMCRUD))

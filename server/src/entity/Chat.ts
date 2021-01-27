@@ -17,18 +17,19 @@ import { getFullDayTime } from "../utils/date";
 export class Chat extends BaseEntity {
 	@Field(() => ID)
 	@PrimaryColumn("uuid")
-	id: string;
+	id: String;
 
-	@ManyToOne(() => User, (user) => user.id)
+	@Field(() => User!, { nullable: true })
+	@ManyToOne(() => User)
 	sender: User;
 
 	@Field(() => String!)
 	@Column("text", { nullable: false })
-	message: string;
+	message: String;
 
 	@Field(() => String!)
 	@Column("text", { nullable: false, default: getFullDayTime() })
-	createdAt: string;
+	createdAt: String;
 
 	@ManyToOne(() => Room, (room) => room.messages)
 	room: Room;

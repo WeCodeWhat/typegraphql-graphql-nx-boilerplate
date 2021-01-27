@@ -1,16 +1,12 @@
 import { useQuery } from '@apollo/client';
 import 'react-chat-elements/dist/main.css';
 import React from 'react';
-import { GET_ROOMS } from '../../core/room/getRooms';
+import { GET_ROOMS } from '../../core/room/schema';
 import { MeetingList } from 'react-chat-elements';
+import { Room } from '../../common/type';
 const moment = require('moment');
 
 export const Rooms: React.FC<{}> = () => {
-  type Room = {
-    id: string;
-    name: string;
-    createdAt: string;
-  };
   const { loading, error, data } = useQuery<Room[]>(GET_ROOMS);
 
   if (error) {

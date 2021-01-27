@@ -6,6 +6,7 @@ import { User } from "../../entity/User";
 @EntityRepository(Room)
 export class RoomRepository extends Repository<Room> {
 	async findMessageAndUpdate(room: Room, chatMessage: Chat) {
+		console.log(chatMessage);
 		if (room.messages) {
 			room.messages.push(chatMessage);
 		} else {
@@ -13,6 +14,7 @@ export class RoomRepository extends Repository<Room> {
 			chats.push(chatMessage);
 			room.messages = chats;
 		}
+		console.log(room.messages);
 		return room.save();
 	}
 

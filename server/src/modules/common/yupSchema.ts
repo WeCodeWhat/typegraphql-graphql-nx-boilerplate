@@ -20,3 +20,7 @@ export const YUP_REGISTER = yup.object().shape({
 export const YUP_ROOMCRUD = yup.object().shape({
 	name: yup.string().min(1).max(30),
 });
+
+export const YUP_UUID = yup.object().shape({
+	id: yup.string().uuid(`Your id is not an uuid`),
+});

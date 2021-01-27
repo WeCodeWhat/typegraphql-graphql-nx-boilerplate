@@ -6,12 +6,20 @@ import {
   AlignItem,
 } from '../FlexBox/FlexBox';
 import { Grid, List } from '@material-ui/core';
+import { GET_ROOM } from '../../core/room/schema';
 import ChatBubble from '../ChatBubble/ChatBubble';
+import { Room } from '../../common/type';
+import { useQuery } from '@apollo/client';
 const moment = require('moment');
 
 interface Props {}
 
 export const ChatArea: React.FC<Props> = () => {
+  const { loading, error, data } = useQuery<Room>(GET_ROOM, {
+    variables: {
+      id: '123',
+    },
+  });
   return (
     <FlexBox
       style={{ height: '100%' }}
@@ -33,6 +41,7 @@ export const ChatArea: React.FC<Props> = () => {
               overflowY: 'auto',
             }}
           >
+            Here {JSON.stringify(data, null, 4)}
             <ChatBubble
               key="1"
               message="Hello World"
