@@ -15,11 +15,12 @@ const moment = require('moment');
 interface Props {}
 
 export const ChatArea: React.FC<Props> = () => {
-  const { loading, error, data } = useQuery<Room>(GET_ROOM, {
+  const { loading, error, data } = useQuery<{ getRoom: Room }>(GET_ROOM, {
     variables: {
-      id: '123',
+      id: 'cee6b3b3-7ca3-4b35-a068-c4c5644129f4',
     },
   });
+  console.log(data);
   return (
     <FlexBox
       style={{ height: '100%' }}
@@ -31,7 +32,9 @@ export const ChatArea: React.FC<Props> = () => {
         align={AlignItem.center}
         style={{ backgroundColor: 'white', height: '70px', width: '100%' }}
       >
-        <div>Python 😯 5 members</div>
+        <div>
+          {data?.getRoom?.name} 😯 {data?.getRoom?.members.length} members
+        </div>
       </FlexBox>
       <FlexBox style={{ padding: '20px 0px', height: '100%' }}>
         <Grid item xs={12}>
@@ -41,24 +44,21 @@ export const ChatArea: React.FC<Props> = () => {
               overflowY: 'auto',
             }}
           >
-            Here {JSON.stringify(data, null, 4)}
-            <ChatBubble
-              key="1"
-              message="Hello World"
-              date={`${moment(new Date().toISOString()).format(
-                'DD-MM-YYYY'
-              )} at ${moment(new Date().toISOString()).format('hh:mm')}`}
-            />
-            <ChatBubble
-              me={true}
-              key="1"
-              message={
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-              }
-              date={`${moment(new Date().toISOString()).format(
-                'DD-MM-YYYY'
-              )} at ${moment(new Date().toISOString()).format('hh:mm')}`}
-            />
+            {loading ? (
+              <div>Loading...</div>
+            ) : (
+              data?.getRoom?.messages.map((message) => (
+                <ChatBubble
+                  key={message.id}
+                  message={message.message}
+                  date={`${moment(message.createdAt).format(
+                    'DD-MM-YYYY hh:mm'
+                  )}`}
+                  senderName={message.sender.name}
+                  me={message.id === message.sender.id}
+                />
+              ))
+            )}
           </List>
         </Grid>
       </FlexBox>
