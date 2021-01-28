@@ -10,7 +10,6 @@ import {
 import { User } from "./User";
 import { v4 as uuidv4 } from "uuid";
 import { Room } from "./Room";
-import { getFullDayTime } from "../utils/date";
 
 @ObjectType("ChatSchema")
 @Entity("Chat")
@@ -28,7 +27,7 @@ export class Chat extends BaseEntity {
 	message: String;
 
 	@Field(() => String!)
-	@Column("text", { nullable: false, default: getFullDayTime() })
+	@Column("text", { nullable: false, default: new Date().toISOString() })
 	createdAt: String;
 
 	@ManyToOne(() => Room, (room) => room.messages)

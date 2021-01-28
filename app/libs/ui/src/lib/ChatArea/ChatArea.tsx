@@ -20,6 +20,9 @@ export const ChatArea: React.FC<Props> = () => {
       id: 'cee6b3b3-7ca3-4b35-a068-c4c5644129f4',
     },
   });
+  if (error) {
+    console.log(error);
+  }
   console.log(data);
   return (
     <FlexBox

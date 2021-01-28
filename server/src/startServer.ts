@@ -17,13 +17,9 @@ export const startServer = async () => {
 		await new REDIS().server.flushall();
 	}
 	const connectionOptions = await getConnectionOptions("default");
-	console.log(
-		process.env.NODE_ENV,
-		process.env.NODE_ENV === EnvironmentType.TEST
-	);
 	await createConnection({
 		...connectionOptions,
-		dropSchema: process.env.NODE_ENV === EnvironmentType.TEST,
+		dropSchema: process.env.NODE_ENV?.trim() === EnvironmentType.TEST,
 		namingStrategy: new SnakeNamingStrategy(),
 	});
 
