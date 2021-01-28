@@ -30,6 +30,7 @@
     "@apollo/client": "^3.3.7",
     "@material-ui/core": "^4.11.3",
     "antd": "^4.11.1",
+    "apollo-link-ws": "^1.0.20",
     "chance": "^1.1.7",
     "core-js": "^3.6.5",
     "document-register-element": "1.13.1",
@@ -42,6 +43,7 @@
     "react-chat-elements": "^10.13.0",
     "react-dom": "17.0.1",
     "style-it": "^2.1.4",
+    "subscriptions-transport-ws": "^0.9.18",
     "tslib": "^2.0.0"
   },
   "devDependencies": {
