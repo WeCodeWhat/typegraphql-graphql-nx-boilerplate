@@ -1,6 +1,6 @@
 # A boilerplate using TypeGraphQL, GraphQL Yoga, Nx Monorepos and React
 
-**Technologies: **
+**Technologies:**
 
 - TypeGraphQL: A GraphQL framework for building the GraphQL schemas in form of classes
 - GraphQL Yoga: A Graphql server (Alternatives: Appllo Server)
