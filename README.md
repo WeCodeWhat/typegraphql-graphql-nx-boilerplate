@@ -8,7 +8,7 @@
 - React: A front-end framework for building SPA.
 - More...
 
-**How to use: **
+**How to use:**
 
 - Go to folder "server" and run script "npm run dev"
 - Go to folder "app" and run script "npm run start"
